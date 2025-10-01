@@ -179,6 +179,7 @@ export const NewSupabaseAuthProvider = ({ children }: AuthProviderProps) => {
       };
 
       // メンバー一覧を取得
+      console.log('🔍 メンバーデータ取得開始 family_id:', family.id);
       const { data: membersData, error: membersError } = await supabase
         .from('members')
         .select('*')
@@ -186,7 +187,11 @@ export const NewSupabaseAuthProvider = ({ children }: AuthProviderProps) => {
         .eq('is_active', true)
         .order('display_order');
 
-      if (membersError) throw membersError;
+      console.log('✅ メンバーデータ取得完了:', membersData?.length, '件');
+      if (membersError) {
+        console.error('❌ メンバーデータ取得エラー:', membersError);
+        throw membersError;
+      }
 
       const members: Member[] = (membersData || []).map(memberData => ({
         id: memberData.id,
